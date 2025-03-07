@@ -1,0 +1,248 @@
+{% extends 'chat/base.html' %}
+
+{% block content %}
+<div class="landing-page">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6 slide-up" style="animation-delay: 0.1s;">
+                <h1 class="hero-title mb-4">Transform News into Insights</h1>
+                <p class="hero-subtitle mb-4">Get instant, AI-powered summaries of any news article. Save time while staying informed.</p>
+                
+                <div class="features mb-4">
+                    <div class="feature-card" style="animation-delay: 0.2s;">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Instant Summaries</h3>
+                            <p>Get concise summaries in seconds</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card" style="animation-delay: 0.3s;">
+                        <div class="feature-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Save & Access</h3>
+                            <p>Keep track of all your summaries</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card" style="animation-delay: 0.4s;">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>AI-Powered</h3>
+                            <p>Powered by advanced AI technology</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cta-buttons slide-up" style="animation-delay: 0.5s;">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'chat_list' %}" class="btn btn-primary btn-lg me-3 hover-effect">
+                        <i class="fas fa-pencil-alt"></i> Start Summarizing
+                    </a>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-primary btn-lg hover-effect">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-3 hover-effect">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg hover-effect">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-lg-6 d-none d-lg-block slide-in-right" style="animation-delay: 0.3s;">
+                <div class="hero-image">
+                    <img src="https://source.unsplash.com/random/600x400/?newspaper" alt="News Summarizer" class="img-fluid">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Summarized in seconds</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-brain"></i>
+                        <span>AI-powered analysis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .landing-page {
+        background-color: var(--background-color);
+        min-height: calc(100vh - 56px);
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .landing-page::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+        z-index: 0;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.2;
+        position: relative;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        max-width: 90%;
+    }
+    
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2.5rem 0;
+    }
+    
+    .feature-card {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+        transition: all var(--transition-speed) ease;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        animation: slideUp 0.5s ease forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .feature-icon {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+    
+    .feature-content {
+        flex: 1;
+    }
+    
+    .feature-content h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+    }
+    
+    .feature-content p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 0.95rem;
+    }
+    
+    .hero-image {
+        position: relative;
+        animation: float 6s ease-in-out infinite;
+        margin-left: 2rem;
+    }
+    
+    .hero-image img {
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        transition: all var(--transition-speed) ease;
+    }
+    
+    .floating-card {
+        position: absolute;
+        background: white;
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        animation: float 5s ease-in-out infinite;
+    }
+    
+    .floating-card i {
+        color: var(--primary-color);
+    }
+    
+    .card-1 {
+        top: 10%;
+        left: -5%;
+        animation-delay: 0.5s;
+    }
+    
+    .card-2 {
+        bottom: 15%;
+        right: 5%;
+        animation-delay: 1s;
+    }
+    
+    .hover-effect {
+        transition: all var(--transition-speed) ease;
+    }
+    
+    .hover-effect:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .cta-buttons {
+        opacity: 0;
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    @media (max-width: 992px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .features {
+            grid-template-columns: 1fr;
+        }
+        
+        .hero-image {
+            margin-top: 2rem;
+            margin-left: 0;
+        }
+    }
+</style>
+{% endblock %}
+

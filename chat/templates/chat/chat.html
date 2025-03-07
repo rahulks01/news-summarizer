@@ -1,0 +1,357 @@
+{% extends 'chat/base.html' %}
+
+{% block content %}
+<div class="chat-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Header -->
+                <div class="chat-header slide-up">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">{{ conversation.title }}</h2>
+                        <div class="btn-group">
+                            <a href="{% url 'chat_list' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to List
+                            </a>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash me-2"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="chat-container slide-up" style="animation-delay: 0.1s;">
+                    {% if chat_messages %}
+                        {% for message in chat_messages %}
+                            <div class="message {% if message.is_bot %}bot-message{% else %}user-message{% endif %} animate-message">
+                                <div class="message-header">
+                                    <span class="message-type">
+                                        {% if message.is_bot %}
+                                            <i class="fas fa-robot me-2"></i>Summary
+                                        {% else %}
+                                            <i class="fas fa-newspaper me-2"></i>Original Article
+                                        {% endif %}
+                                    </span>
+                                    <span class="message-time">
+                                        <i class="far fa-clock me-1"></i>
+                                        {{ message.created_at|date:"M d, Y H:i" }}
+                                    </span>
+                                </div>
+                                <div class="message-content">
+                                    {% if message.is_bot %}
+                                        <div class="markdown-content">
+                                            {{ message.content }}
+                                        </div>
+                                    {% else %}
+                                        {{ message.content|linebreaks }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
+                            <p>Paste an article to get started!</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Input Form -->
+                <div class="input-section slide-up" style="animation-delay: 0.2s;">
+                    <form method="post" class="article-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="article_text" class="form-label">
+                                <i class="fas fa-paste me-2"></i>Paste your article here:
+                            </label>
+                            <textarea 
+                                name="article_text" 
+                                id="article_text" 
+                                class="form-control" 
+                                rows="6" 
+                                placeholder="Paste the article text here..."
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary submit-btn">
+                            <i class="fas fa-magic me-2"></i>Generate Summary
+                            <span class="btn-shine"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">
+                        <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                        Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">Are you sure you want to delete this conversation?</p>
+                    <p class="text-muted mb-0">This action cannot be undone.</p>
+                    <div class="alert alert-warning mt-3 mb-0">
+                        <small><strong>Title:</strong> {{ conversation.title }}</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <form action="{% url 'delete_conversation' conversation.id %}" method="POST" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-2"></i>Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chat-page {
+        padding: 2rem 0;
+        min-height: calc(100vh - 56px);
+    }
+    
+    .chat-header {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 1.5rem;
+    }
+    
+    .chat-header h2 {
+        font-weight: 600;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+    }
+    
+    .chat-container {
+        height: 60vh;
+        overflow-y: auto;
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 1.5rem;
+        scroll-behavior: smooth;
+    }
+    
+    .message {
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .message:hover {
+        box-shadow: var(--shadow-md);
+    }
+    
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .message-type {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+    
+    .message-time {
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+    }
+    
+    .user-message {
+        background-color: #e7f0ff;
+        margin-left: 2rem;
+        border-top-right-radius: 5px;
+        border-left: 4px solid #4f46e5;
+    }
+    
+    .bot-message {
+        background-color: #f8f9fa;
+        margin-right: 2rem;
+        border-top-left-radius: 5px;
+        border-left: 4px solid #10b981;
+    }
+    
+    .message-content {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    
+    .markdown-content {
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: var(--radius-sm);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-muted);
+    }
+    
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        background: #f0f4ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .empty-icon i {
+        font-size: 2rem;
+        color: var(--primary-color);
+    }
+    
+    .input-section {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .article-form textarea {
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 1rem;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        resize: none;
+    }
+    
+    .article-form textarea:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        outline: none;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        padding: 0.75rem;
+        margin-top: 1rem;
+        border-radius: var(--radius-md);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        font-weight: 500;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .btn-shine {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        animation: shine 3s infinite;
+    }
+    
+    @keyframes shine {
+        to {
+            left: 100%;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .chat-header {
+            padding: 1rem;
+        }
+        
+        .chat-header .btn-group {
+            margin-top: 1rem;
+            width: 100%;
+        }
+        
+        .chat-header .btn-group .btn {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .message {
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .chat-container {
+            height: 50vh;
+        }
+    }
+
+    .animate-message {
+        animation: fadeIn 0.5s ease-in-out forwards;
+        opacity: 0;
+    }
+
+    .animate-message:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .animate-message:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .animate-message:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .animate-message:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .animate-message:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .animate-message:nth-child(6) {
+        animation-delay: 0.6s;
+    }
+
+    .animate-message:nth-child(7) {
+        animation-delay: 0.7s;
+    }
+
+    .animate-message:nth-child(8) {
+        animation-delay: 0.8s;
+    }
+</style>
+{% endblock %}
+
