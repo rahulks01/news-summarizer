@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="landing-page">
+    {% load static %}
     <div class="container">
         <div class="row align-items-center min-vh-100">
             <div class="col-lg-6 slide-up" style="animation-delay: 0.1s;">
@@ -61,7 +62,7 @@
             
             <div class="col-lg-6 d-none d-lg-block slide-in-right" style="animation-delay: 0.3s;">
                 <div class="hero-image">
-                    <img src="https://source.unsplash.com/random/600x400/?newspaper" alt="News Summarizer" class="img-fluid">
+                    <img src="{% static 'newspaper.jpg' %}" alt="News Summarizer" class="img-fluid">
                     <div class="floating-card card-1">
                         <i class="fas fa-check-circle"></i>
                         <span>Summarized in seconds</span>

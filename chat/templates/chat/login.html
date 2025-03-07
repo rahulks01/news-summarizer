@@ -9,25 +9,39 @@
                 <div class="auth-card slide-up">
                     <div class="auth-header">
                         <div class="auth-icon">
-                            <i class="fas {% if title == 'Login' %}fa-sign-in-alt{% else %}fa-user-plus{% endif %}"></i>
+                            <!-- <i class="fas {% if title == 'Login' %}fa-sign-in-alt{% else %}fa-user-plus{% endif %}"></i> -->
+                            <i class="fas {% if request.path == '/login/' %}
+                            fa-sign-in-alt
+                            {% elif request.path == '/register/' %}
+                            fa-user-plus
+                            {% endif %}"></i>
                         </div>
-                        <h2 class="auth-title">{{ title }}</h2>
+                        <h2 class="auth-title">{% if request.path == '/login/' %}
+                            Login
+                            {% elif request.path == '/register/' %}
+                            Register
+                            {% endif %} </h2>
                     </div>
-                    
+
                     <form method="post" class="auth-form">
                         {% csrf_token %}
                         {{ form|crispy }}
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="fas {% if title == 'Login' %}fa-sign-in-alt{% else %}fa-user-plus{% endif %} me-2"></i> 
-                            {{ title }}
+                            <i
+                                class="fas {% if title == 'Login' %}fa-sign-in-alt{% else %}fa-user-plus{% endif %} me-2"></i>
+                            {% if request.path == '/login/' %}
+                                Login
+                            {% elif request.path == '/register/' %}
+                             Register
+                            {% endif %}
                             <span class="btn-shine"></span>
                         </button>
                     </form>
-                    
+
                     <p class="auth-switch">
-                        {% if title == 'Login' %}
+                        {% if request.path == '/login/' %}
                         Don't have an account? <a href="{% url 'register' %}" class="auth-link">Register here</a>
-                        {% else %}
+                        {% elif request.path == '/register/' %}
                         Already have an account? <a href="{% url 'login' %}" class="auth-link">Login here</a>
                         {% endif %}
                     </p>
@@ -45,7 +59,7 @@
         align-items: center;
         background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
     }
-    
+
     .auth-card {
         background: var(--card-bg);
         padding: 2rem;
@@ -54,7 +68,7 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .auth-card::before {
         content: '';
         position: absolute;
@@ -64,12 +78,12 @@
         height: 5px;
         background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
     }
-    
+
     .auth-header {
         text-align: center;
         margin-bottom: 2rem;
     }
-    
+
     .auth-icon {
         width: 70px;
         height: 70px;
@@ -83,17 +97,17 @@
         font-size: 1.5rem;
         box-shadow: var(--shadow-md);
     }
-    
+
     .auth-title {
         font-weight: 700;
         color: var(--text-color);
         margin-bottom: 0;
     }
-    
+
     .auth-form {
         margin-bottom: 1.5rem;
     }
-    
+
     .auth-form .form-control {
         border-radius: var(--radius-md);
         padding: 0.75rem;
@@ -101,12 +115,12 @@
         transition: all var(--transition-speed) ease;
         font-size: 1rem;
     }
-    
+
     .auth-form .form-control:focus {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
     }
-    
+
     .auth-form .btn {
         margin-top: 1.5rem;
         padding: 0.75rem;
@@ -114,35 +128,33 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .btn-shine {
         position: absolute;
         top: 0;
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.2) 50%,
-            rgba(255, 255, 255, 0) 100%
-        );
+        background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0) 100%);
         animation: shine 3s infinite;
     }
-    
+
     @keyframes shine {
         to {
             left: 100%;
         }
     }
-    
+
     .auth-switch {
         text-align: center;
         margin-top: 1.5rem;
         color: var(--text-muted);
         font-size: 0.95rem;
     }
-    
+
     .auth-link {
         color: var(--primary-color);
         text-decoration: none;
@@ -150,7 +162,7 @@
         transition: color var(--transition-speed) ease;
         position: relative;
     }
-    
+
     .auth-link::after {
         content: '';
         position: absolute;
@@ -161,25 +173,25 @@
         background: var(--primary-color);
         transition: width var(--transition-speed) ease;
     }
-    
+
     .auth-link:hover {
         color: var(--secondary-color);
     }
-    
+
     .auth-link:hover::after {
         width: 100%;
     }
-    
+
     /* Mobile responsiveness */
     @media (max-width: 768px) {
         .auth-page {
             padding: 2rem 0;
         }
-        
+
         .auth-card {
             padding: 1.5rem;
         }
-        
+
         .auth-icon {
             width: 60px;
             height: 60px;
@@ -188,4 +200,3 @@
     }
 </style>
 {% endblock %}
-

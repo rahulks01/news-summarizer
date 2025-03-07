@@ -11,33 +11,40 @@
                         <div class="auth-icon">
                             <i class="fas {% if title == 'Login' %}fa-sign-in-alt{% else %}fa-user-plus{% endif %}"></i>
                         </div>
-                        <h2 class="auth-title">{{ title }}</h2>
+                        <h2 class="auth-title">{% if request.path == '/login/' %}
+                            Login
+                            {% elif request.path == '/register/' %}
+                            Register
+                            {% endif %}</h2>
                     </div>
-                    
+
                     <form method="post" class="auth-form">
                         {% csrf_token %}
                         {% for field in form %}
-                            <div class="form-group mb-3">
-                                {{ field.label_tag }}
-                                {% if field.name == 'password' or field.name == 'password1' or field.name == 'password2' %}
-                                    <div class="input-group">
-                                        {{ field|as_crispy_field }}
-                                        <button class="btn btn-outline-secondary toggle-password" type="button">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                {% else %}
-                                    {{ field|as_crispy_field }}
-                                {% endif %}
+                        <div class="form-group mb-3">
+                            {% if field.name == 'password' or field.name == 'password1' or field.name == 'password2' %}
+                            <div class="input-group">
+                                {{ field|as_crispy_field }}
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                             </div>
+                            {% else %}
+                            {{ field|as_crispy_field }}
+                            {% endif %}
+                        </div>
                         {% endfor %}
                         <button type="submit" class="btn btn-primary w-100 mt-3">
-                            <i class="fas {% if title == 'Login' %}fa-sign-in-alt{% else %}fa-user-plus{% endif %} me-2"></i> 
-                            {{ title }}
+                            <i class="fas {% if title == 'Login' %}fa-sign-in-alt{% else %}fa-user-plus{% endif %} me-2"></i>
+                            {% if request.path == '/login/' %}
+                            Login
+                            {% elif request.path == '/register/' %}
+                            Register
+                            {% endif %}
                             <span class="btn-shine"></span>
                         </button>
                     </form>
-                    
+
                     <p class="auth-switch">
                         {% if title == 'Login' %}
                         Don't have an account? <a href="{% url 'register' %}" class="auth-link">Register here</a>
@@ -59,7 +66,7 @@
         align-items: center;
         background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
     }
-    
+
     .auth-card {
         background: var(--card-bg);
         padding: 2rem;
@@ -69,11 +76,11 @@
         overflow: hidden;
         transition: all var(--transition-speed) ease;
     }
-    
+
     .auth-card:hover {
         transform: translateY(-5px);
     }
-    
+
     .auth-card::before {
         content: '';
         position: absolute;
@@ -83,12 +90,12 @@
         height: 5px;
         background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
     }
-    
+
     .auth-header {
         text-align: center;
         margin-bottom: 2rem;
     }
-    
+
     .auth-icon {
         width: 70px;
         height: 70px;
@@ -102,17 +109,17 @@
         font-size: 1.5rem;
         box-shadow: var(--shadow-md);
     }
-    
+
     .auth-title {
         font-weight: 700;
         color: var(--text-color);
         margin-bottom: 0;
     }
-    
+
     .auth-form {
         margin-bottom: 1.5rem;
     }
-    
+
     .auth-form .form-control {
         border-radius: var(--radius-md);
         padding: 0.75rem;
@@ -120,12 +127,12 @@
         transition: all var(--transition-speed) ease;
         font-size: 1rem;
     }
-    
+
     .auth-form .form-control:focus {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
     }
-    
+
     .auth-form .btn {
         margin-top: 1.5rem;
         padding: 0.75rem;
@@ -133,35 +140,33 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .btn-shine {
         position: absolute;
         top: 0;
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.2) 50%,
-            rgba(255, 255, 255, 0) 100%
-        );
+        background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0) 100%);
         animation: shine 3s infinite;
     }
-    
+
     @keyframes shine {
         to {
             left: 100%;
         }
     }
-    
+
     .auth-switch {
         text-align: center;
         margin-top: 1.5rem;
         color: var(--text-muted);
         font-size: 0.95rem;
     }
-    
+
     .auth-link {
         color: var(--primary-color);
         text-decoration: none;
@@ -169,7 +174,7 @@
         transition: color var(--transition-speed) ease;
         position: relative;
     }
-    
+
     .auth-link::after {
         content: '';
         position: absolute;
@@ -180,29 +185,29 @@
         background: var(--primary-color);
         transition: width var(--transition-speed) ease;
     }
-    
+
     .auth-link:hover {
         color: var(--secondary-color);
     }
-    
+
     .auth-link:hover::after {
         width: 100%;
     }
-    
+
     .toggle-password {
         cursor: pointer;
     }
-    
+
     /* Mobile responsiveness */
     @media (max-width: 768px) {
         .auth-page {
             padding: 2rem 0;
         }
-        
+
         .auth-card {
             padding: 1.5rem;
         }
-        
+
         .auth-icon {
             width: 60px;
             height: 60px;
@@ -212,18 +217,17 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const togglePassword = document.querySelectorAll('.toggle-password');
-    togglePassword.forEach(button => {
-        button.addEventListener('click', function() {
-            const input = this.previousElementSibling;
-            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-            input.setAttribute('type', type);
-            this.querySelector('i').classList.toggle('fa-eye');
-            this.querySelector('i').classList.toggle('fa-eye-slash');
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePassword = document.querySelectorAll('.toggle-password');
+        togglePassword.forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.previousElementSibling;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
         });
     });
-});
 </script>
 {% endblock %}
-
