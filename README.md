@@ -1,7 +1,7 @@
 # News Summarizer
 
 ## Project Description
-News Summarizer is a Django-based web application that generates concise news summaries from longer articles. This project is designed to help a local newspaper create quick, digestible summaries for their daily newsletter. The application features user authentication (login/signup), chat storage for users to refer to past conversations, and a well-designed frontend. It utilizes the Ivis Labs API for summarization instead of OpenAI's API.
+News Summarizer is a Django-based web application that generates concise news summaries from longer articles. This project is designed to help a local newspaper create quick, digestible summaries for their daily newsletter. The application features user authentication (login/signup), chat storage for users to refer to past conversations, and a well-designed frontend. It utilizes the Ivis Labs API for summarization.
 
 ## Prerequisites
 Ensure you have the following installed on your system:
